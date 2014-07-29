@@ -376,12 +376,20 @@ void getPointCloudCallback (const sensor_msgs::PointCloud2ConstPtr &msg)
       tf::Transform m (tf::Quaternion::getIdentity (), markerOrigin);
       tf::Transform markerPose = t * m; // marker pose in the camera frame
 
-	  //Publish the transform from the camera to the marker		
-	  std::string markerFrame = "ar_marker_";
-	  std::stringstream out;
-	  out << id;
-	  std::string id_string = out.str();
-	  markerFrame += id_string;
+    // get namespace of node
+    std::string ns = ros::this_node::getNamespace();
+    ns.erase(0,1); // This will erase a superfluous slash at the begining of ns created by getNamespace
+    // create name for node and prepend namespace    
+    std::string markerName = "/ar_marker_";   
+    std::string markerFrame = ns + markerName;
+    // Gets the ID number of the marker
+    std::stringstream out;
+    out << id;
+    std::string id_string = out.str();
+    markerFrame += id_string;
+	  //Publish the transform from the camera to the marker
+    std::cerr<<image_msg->header.frame_id<<std::endl;
+    std::cerr<<markerFrame<<std::endl;
 	  tf::StampedTransform camToMarker (t, image_msg->header.stamp, image_msg->header.frame_id, markerFrame.c_str());
 	  tf_broadcaster->sendTransform(camToMarker);
 				
