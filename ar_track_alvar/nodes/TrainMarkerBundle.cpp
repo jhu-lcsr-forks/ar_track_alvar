@@ -315,7 +315,7 @@ void getCapCallback (const sensor_msgs::ImageConstPtr & image_msg)
 
 
 //Do something based on keystrokes from menu
-int keyProcess(int key)
+int keyProcess(char key)
 {
     if(key == 'r')
     {
@@ -423,10 +423,12 @@ int main(int argc, char *argv[])
 
 	cvNamedWindow("Command input window", CV_WINDOW_AUTOSIZE); 
 
-	while(1){
+	while(ros::ok()){
 		int key = cvWaitKey(20);
-		if(key >= 0)
+		if(key >= 0) {
+      std::cerr<<"key: "<<(char)key<<std::endl;
 			keyProcess(key);
+    }
 		ros::spinOnce();
 	}
 
