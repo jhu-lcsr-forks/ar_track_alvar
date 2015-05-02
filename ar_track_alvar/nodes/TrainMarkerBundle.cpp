@@ -151,7 +151,7 @@ double GetMultiMarkerPose(IplImage *image, Pose &pose) {
       // Initialize the bundle adjuster with initial marker poses.
       multi_marker_bundle->PointCloudCopy(multi_marker_init);
       cout<<"Optimizing..."<<endl;
-      if (multi_marker_bundle->Optimize(cam, 0.01, 20)) {
+      if (multi_marker_bundle->Optimize(cam, 0.01, 50, Optimization::TUKEY_LM)) {
         cout<<"Optimizing done"<<endl;
         optimize_done=true;
 
@@ -164,7 +164,12 @@ double GetMultiMarkerPose(IplImage *image, Pose &pose) {
   return error;
 }
 
-void makeMarkerMsgs(int type, int id, Pose &p, sensor_msgs::ImageConstPtr image_msg, tf::StampedTransform &CamToOutput, visualization_msgs::Marker *rvizMarker, ar_track_alvar_msgs::AlvarMarker *ar_pose_marker){
+void makeMarkerMsgs(
+    int type, int id, Pose &p, sensor_msgs::ImageConstPtr image_msg,
+    tf::StampedTransform &CamToOutput, 
+    visualization_msgs::Marker *rvizMarker,
+    ar_track_alvar_msgs::AlvarMarker *ar_pose_marker)
+{
   double px,py,pz,qx,qy,qz,qw;
 
   px = p.translation[0]/100.0;
